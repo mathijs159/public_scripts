@@ -183,11 +183,16 @@ def parse_blast_line(blast_line_as_list, tax_column):
         #print "RAW BLAST line = ", query_name, blast_line
     percentage_identity = blast_line[2]
     #description = blast_line[12]
-    tax_id = blast_line[tax_column].split("_")[1]
+    try:
+        tax_id = blast_line[tax_column].split("_")[1]
+        return query_name, percentage_identity, Evalue, bit_score, tax_id
+    except IndexError:
+        print "non existing tax_id\n"
+        return query_name, percentage_identity, Evalue, bit_score, "N/A"
     #species_sci = blast_line[-3]
     #species_common = blast_line[-2]
     #kingdom = blast_line[-1]
-    return query_name, percentage_identity, Evalue, bit_score, tax_id
+    #return query_name, percentage_identity, Evalue, bit_score, tax_id
 
 def meta_or_non_metazoan(tax_id,tax_id_filter_up_to, filter_out_tax_id):
     "function to return metazoan or non-metazoan"
@@ -239,27 +244,20 @@ def write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_fi
 
     if best_metazoan_hits != []:
         catorgory = "phylum_of_interest"
-        query_name, percentage_identity, Evalue, bit_score, description, tax_id, \
-                species_sci, species_common, \
-                kingdom = parse_blast_line(best_metazoan_hits, tax_column)
+        query_name, percentage_identity, Evalue, bit_score, tax_id = parse_blast_line(best_metazoan_hits, tax_column)
         query_name = query_name.split("gene=")[0]
-        data_formatted_top_meta= "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" %(query_name, \
+        data_formatted_top_meta= "%s\t%s\t%s\t%s\t%s\n" %(query_name, \
                                                             percentage_identity,Evalue,
-                                                            bit_score, tax_id,
-                                                            kingdom, catorgory, species_sci,\
-                                                            description)
+                                                            bit_score, tax_id)
 
             
     if best_nonmetazoan_hits != []:
         catorgory = "non_phylum_of_interest"
-        query_name, percentage_identity, Evalue, bit_score, description, tax_id, \
-                species_sci, species_common, kingdom = parse_blast_line(best_nonmetazoan_hits, tax_column)
+        query_name, percentage_identity, Evalue, bit_score, tax_id = parse_blast_line(best_nonmetazoan_hits, tax_column)
         query_name = query_name.split("gene=")[0]
-        data_formatted_top_nonmeta= "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" %(query_name,\
+        data_formatted_top_nonmeta= "%s\t%s\t%s\t%s\t%s\n" %(query_name,\
                                                                     percentage_identity, Evalue,
-                                                                    bit_score, tax_id,
-                                                                    kingdom, catorgory, \
-                                                                    species_sci,description)
+                                                                    bit_score, tax_id)
 
 
     out_list = [data_formatted_top_meta_no_hit, data_formatted_top_meta,\
