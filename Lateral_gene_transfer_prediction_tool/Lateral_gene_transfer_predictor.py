@@ -172,8 +172,8 @@ def parse_blast_line(blast_line_as_list, tax_column):
     if len(blast_line_as_list) == 1:
         blast_line_as_list = blast_line_as_list[0]
     blast_line = blast_line_as_list
-    Evalue = float(blast_line[10])
-    bit_score = float(blast_line[11])
+    Evalue = float(blast_line[9])
+    bit_score = float(blast_line[10])
     # tax id can have a whole load of value e.g.
     #5141;367110;510951;510952;771870.
     #Therefore we split it and take the first one
@@ -182,13 +182,12 @@ def parse_blast_line(blast_line_as_list, tax_column):
     #if "g3392" in query_name:
         #print "RAW BLAST line = ", query_name, blast_line
     percentage_identity = blast_line[2]
-    description = blast_line[12]
-    tax_id = blast_line[tax_column].split(";")[0]
-    species_sci = blast_line[-3]
-    species_common = blast_line[-2]
-    kingdom = blast_line[-1]
-    return query_name, percentage_identity, Evalue, bit_score, \
-           description, tax_id, species_sci, species_common, kingdom
+    #description = blast_line[12]
+    tax_id = blast_line[tax_column].split("_")[1]
+    #species_sci = blast_line[-3]
+    #species_common = blast_line[-2]
+    #kingdom = blast_line[-1]
+    return query_name, percentage_identity, Evalue, bit_score, tax_id
 
 def meta_or_non_metazoan(tax_id,tax_id_filter_up_to, filter_out_tax_id):
     "function to return metazoan or non-metazoan"
@@ -295,8 +294,7 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
             continue #if the last line is blank
         
         blast_line = line.rstrip("\n").split("\t")
-        query_name, percentage_identity, Evalue, bit_score, description, tax_id,\
-                    species_sci, species_common, kingdom = parse_blast_line(blast_line, tax_column)
+        query_name, percentage_identity, Evalue, bit_score, tax_id = parse_blast_line(blast_line, tax_column)
         query_name = query_name.split("gene=")[0]
         #print query_name
         
@@ -350,15 +348,15 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
                 if best_metazoan_hits == []:
                     best_metazoan_hits = reset_list_add_info(best_metazoan_hits, blast_line)                    
 
-                if float(bit_score) > float(best_metazoan_hits[0][11]):
+                if float(bit_score) > float(best_metazoan_hits[0][10]):
                         best_metazoan_hits = reset_list_add_info(best_metazoan_hits, blast_line)
             if key == "non_phylum_of_interest":
                 if best_nonmetazoan_hits == []:
                     best_nonmetazoan_hits = reset_list_add_info(best_nonmetazoan_hits, blast_line)
-                old_bit_score = float(best_nonmetazoan_hits[0][11])
+                old_bit_score = float(best_nonmetazoan_hits[0][10])
                 #print "best_nonmetazoan_hits", best_nonmetazoan_hits
                 #print "old bit score = ", old_bit_score, " new = ", float(bit_score)
-                if float(bit_score) > float(best_nonmetazoan_hits[0][11]):
+                if float(bit_score) > float(best_nonmetazoan_hits[0][10]):
                     #print " you should see this"
                     
                     best_nonmetazoan_hits = reset_list_add_info(best_nonmetazoan_hits, blast_line)
@@ -704,10 +702,10 @@ parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default={"4751"
                   "(current default is a set containing Fungi, 4751)")
 
 
-parser.add_option("--tax_column", dest="tax_column", default="14",
+parser.add_option("--tax_column", dest="tax_column", default="2",
                   help="the column with the tax_id info. Default is 14"
-                  "(as counted by a human, not a computer)")
-                  #"(current default is 2 with a split on _)")
+                  "(as counted by a human, not a computer)"
+                  "(current default is 2 with a split on \"_\" to filter out tax_id)")
                     
 parser.add_option("-o", "--out", dest="outfile", default="_tab_blast_LGT_results.tab",
                   help="Output filename - default= infile__tab_blast_LGT_results",
@@ -786,7 +784,7 @@ find_true_alien_score(tax_filter_out, outfile+"_precursor_value.temp", \
                       alien_index_threshold)
 
 print '\n\tdone... go to the pub\n'
-print tax_filter_out
+#print tax_filter_out
 
 ### extra info:
 
