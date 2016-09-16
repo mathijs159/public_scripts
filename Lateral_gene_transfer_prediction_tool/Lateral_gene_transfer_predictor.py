@@ -191,7 +191,7 @@ def parse_blast_line(blast_line_as_list, tax_column):
         return query_name, percentage_identity, Evalue, bit_score, \
             description, tax_id, species_sci, species_common, kingdom
     except IndexError:
-        #print "tax_id not present, filtering out\n"
+        # print "tax_id not present, filtering out\n"
         tax_id = "N/A"
         return query_name, percentage_identity, Evalue, bit_score, \
             description, tax_id, species_sci, species_common, kingdom
@@ -791,7 +791,7 @@ find_true_alien_score(tax_filter_out, outfile + "_precursor_value.temp", \
                       alien_index_threshold)
 
 print '\n\tdone... go to the pub\n'
-# print tax_filter_out
+# print(tax_filter_out)
 
 # ## extra info:
 
