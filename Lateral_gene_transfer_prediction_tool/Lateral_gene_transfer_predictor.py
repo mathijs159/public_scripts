@@ -7,7 +7,7 @@
 # script: Parse the NCBI taxonomic database node.dmp to get the
 # taxonomic relationship
 
-#author: Peter Thorpe September 2015. The James Hutton Insitute, Dundee, UK.
+# author: Peter Thorpe September 2015. The James Hutton Insitute, Dundee, UK.
 
 
 """
@@ -51,7 +51,7 @@ scomnames = common_name
 sskingdoms = kingdom
 
 """
-#need this for exponential
+# need this for exponential
 import math
 from math import exp, expm1
 import os
@@ -65,105 +65,105 @@ def parse_NCBI_nodes_tab_file(folder):
 database and find the parent child relationship....returns a
 dictionary for later use"""
 
-    #open file - read.
-    #nodes.dmp - this file is separated by \t|\t
-    #tax_dmp_database = open(nodes_dmp, "r")
-    #empty dictionary to add to parent and child (keys,vals) to
+    # open file - read.
+    # nodes.dmp - this file is separated by \t|\t
+    # tax_dmp_database = open(nodes_dmp, "r")
+    # empty dictionary to add to parent and child (keys,vals) to
     tax_dictionary = {}
 
-    #nodes.dmp files goes: child, parent, etc
-    #merged.dmp file goes: old, new
-    #In both cases, can take key as column 0 and value as column 1
+    # nodes.dmp files goes: child, parent, etc
+    # merged.dmp file goes: old, new
+    # In both cases, can take key as column 0 and value as column 1
     for filename in ["nodes.dmp", "merged.dmp"]:
         with open(os.path.join(folder, filename)) as handle:
             for line in handle:
                 tax_info = line.replace("\n", "\t").split("\t|\t")
-                #first element
+                # first element
                 parent = tax_info[1]
-                #second element
+                # second element
                 child = tax_info[0]
-                #add these to the dictionary {parent:child}
-                tax_dictionary[child]= parent
-    #print tax_dictionary
-    #f_out = open("dictionary_test.out", "w")
-    #print >> f_out, tax_dictionary
-    #f_out.close()
+                # add these to the dictionary {parent:child}
+                tax_dictionary[child] = parent
+    # print tax_dictionary
+    # f_out = open("dictionary_test.out", "w")
+    # print >> f_out, tax_dictionary
+    # f_out.close()
     
     return tax_dictionary
 
 ###########################################################################################################################################################################################
 
-def test_if_id_is_metazoan(tax_id_of_interest,final_tx_id_to_identify_up_to, tax_to_filter_out):
+def test_if_id_is_metazoan(tax_id_of_interest, final_tx_id_to_identify_up_to, tax_to_filter_out):
     """function to get a list of tax id of interest from the tax_dictionary
     which is produced in the parse_function (parse_NCBI_nodes_tab_file)
     nodes.dmp file. . The tax id
     are added to a list for later use
     """
-    #print "filtering up to =", final_tx_id_to_identify_up_to
-    #print "filtering out = ", tax_to_filter_out
+    # print "filtering up to =", final_tx_id_to_identify_up_to
+    # print "filtering out = ", tax_to_filter_out
     if tax_id_of_interest == "N/A":
         raise ValueError("N/A as taxonomy ID")
     if tax_id_of_interest == "0":
-        tax_id_of_interest =="32644"#assign an unknown id
+        tax_id_of_interest == "32644"  # assign an unknown id
         return "In_filter_out_tax_id" 
-    #call the function to parse nodes file and assign to variable
-    #tax_dictionary = parse_NCBI_nodes_tab_file(nodes_dmp)
-    #empty list to add tax id to
-    #list_of_tx_id_identified_that_we_want = []
-    #get the "master" parent id
+    # call the function to parse nodes file and assign to variable
+    # tax_dictionary = parse_NCBI_nodes_tab_file(nodes_dmp)
+    # empty list to add tax id to
+    # list_of_tx_id_identified_that_we_want = []
+    # get the "master" parent id
     parent = tax_dictionary[tax_id_of_interest]
-    #print parent
+    # print parent
 
-    #list_of_tx_id_identified_that_we_want.append(parent)
+    # list_of_tx_id_identified_that_we_want.append(parent)
     while True:
-    #for keys in tax_dictionary:
-        #print "parent = ", parent, "\n"
+    # for keys in tax_dictionary:
+        # print "parent = ", parent, "\n"
         parent = tax_dictionary[parent]
         if tax_id_of_interest == "N/A":
             raise ValueError("N/A as taxonomy ID")
-        #list_of_tx_id_identified_that_we_want.append(parent)
-        #print list_of_tx_id_identified_that_we_want
-        #print "new parent = ", parent
-        #32630 is a synthetic organism
-        if parent == "32630":#32630
+        # list_of_tx_id_identified_that_we_want.append(parent)
+        # print list_of_tx_id_identified_that_we_want
+        # print "new parent = ", parent
+        # 32630 is a synthetic organism
+        if parent == "32630":  # 32630
             return "In_filter_out_tax_id"
             break            
         if parent in tax_to_filter_out:
-            #print "filtering out"
+            # print "filtering out"
             return "In_filter_out_tax_id"
             break
         if parent in final_tx_id_to_identify_up_to:
-            #print "......................... i'm here"
+            # print "......................... i'm here"
             return True
         elif parent == "1":
-            #print "Reached the root of the tree"
+            # print "Reached the root of the tree"
             return False
   
 ###########################################################################################################################################################################################
                 
-def test_id_of_interst(tax_id_of_interest,\
-                        final_tx_id_to_identify_up_to,out_file):
-    #test pea aphid is in metazoa, should be true
-    assert test_if_id_is_metazoan(nodes_dmp,"7029","33208") is True
-    #test Arthopoda is in metazoa. Should be true
-    assert test_if_id_is_metazoan(nodes_dmp,"6656","33208") is True
-    #test pea aphid is in Pythophthora, should be false
-    assert test_if_id_is_metazoan(nodes_dmp,"7029","4783") is False
+def test_id_of_interst(tax_id_of_interest, \
+                        final_tx_id_to_identify_up_to, out_file):
+    # test pea aphid is in metazoa, should be true
+    assert test_if_id_is_metazoan(nodes_dmp, "7029", "33208") is True
+    # test Arthopoda is in metazoa. Should be true
+    assert test_if_id_is_metazoan(nodes_dmp, "6656", "33208") is True
+    # test pea aphid is in Pythophthora, should be false
+    assert test_if_id_is_metazoan(nodes_dmp, "7029", "4783") is False
 
 
-    if test_if_id_is_metazoan(tax_id_of_interest,\
+    if test_if_id_is_metazoan(tax_id_of_interest, \
                             final_tx_id_to_identify_up_to) is True:
 
-        #print "......it worked", tax_id_of_interest
+        # print "......it worked", tax_id_of_interest
         return True
-    if test_if_id_is_metazoan(tax_id_of_interest,\
+    if test_if_id_is_metazoan(tax_id_of_interest, \
                             final_tx_id_to_identify_up_to) is False:
         return False
     
 #############################################################################################################################
-#7029 = pea aphid
-#6656 = filter_out_tax_id
-#33208 = Metazoa   -  for me this is the tax id I want to go up to
+# 7029 = pea aphid
+# 6656 = filter_out_tax_id
+# 33208 = Metazoa   -  for me this is the tax id I want to go up to
 ###########################################################################################################################################################################################
 
 def parse_blast_line(blast_line_as_list, tax_column):
@@ -175,38 +175,40 @@ def parse_blast_line(blast_line_as_list, tax_column):
     Evalue = float(blast_line[9])
     bit_score = float(blast_line[10])
     # tax id can have a whole load of value e.g.
-    #5141;367110;510951;510952;771870.
-    #Therefore we split it and take the first one
+    # 5141;367110;510951;510952;771870.
+    # Therefore we split it and take the first one
     query_name = blast_line[0]
     query_name = query_name.split("gene=")[0]
-    #if "g3392" in query_name:
-        #print "RAW BLAST line = ", query_name, blast_line
+    # if "g3392" in query_name:
+        # print "RAW BLAST line = ", query_name, blast_line
     percentage_identity = blast_line[2]
-    #description = blast_line[12]
+    description = ""
+    species_sci = ""
+    species_common = ""
+    kingdom = ""
     try:
         tax_id = blast_line[tax_column].split("_")[1]
-        return query_name, percentage_identity, Evalue, bit_score, tax_id
+        return query_name, percentage_identity, Evalue, bit_score, \
+            description, tax_id, species_sci, species_common, kingdom
     except IndexError:
-        print "non existing tax_id\n"
-        return query_name, percentage_identity, Evalue, bit_score, "N/A"
-    #species_sci = blast_line[-3]
-    #species_common = blast_line[-2]
-    #kingdom = blast_line[-1]
-    #return query_name, percentage_identity, Evalue, bit_score, tax_id
+        #print "tax_id not present, filtering out\n"
+        tax_id = "N/A"
+        return query_name, percentage_identity, Evalue, bit_score, \
+            description, tax_id, species_sci, species_common, kingdom
 
-def meta_or_non_metazoan(tax_id,tax_id_filter_up_to, filter_out_tax_id):
+def meta_or_non_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id):
     "function to return metazoan or non-metazoan"
     # call the function to test if the id of interest falls in metazoa or not
-    if tax_id =="N/A":
+    if tax_id == "N/A":
         return "N/A"
     elif test_if_id_is_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id) == "In_filter_out_tax_id":
-        #print "in filter out phylum\n"
-        return "N/A" # skip the code below
+        # print "in filter out phylum\n"
+        return "N/A"  # skip the code below
     elif test_if_id_is_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id):
         return "phylum_of_interest"
     else:
         return "non_phylum_of_interest"
-        #assert test_if_id_is_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id) is False
+        # assert test_if_id_is_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id) is False
     
 def reset_list_add_info(list_in, info)  :
     "function to rest the list to empty, then add info to it"
@@ -223,15 +225,15 @@ def write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_fi
     data_formatted_top_nonmeta_no_hit = ""
     data_formatted_top_nonmeta = ""
     data_formatted_top_meta = ""
-    #print "best_metazoan_hits", best_metazoan_hits
-    #print "best_nonmetazoan_hits", best_nonmetazoan_hits
+    # print "best_metazoan_hits", best_metazoan_hits
+    # print "best_nonmetazoan_hits", best_nonmetazoan_hits
     
     if best_metazoan_hits == []:
         if best_nonmetazoan_hits != []:
             results_list = parse_blast_line(best_nonmetazoan_hits, tax_column)
             query_name = results_list[0]
             query_name = query_name.split("gene=")[0]
-            data_formatted_top_meta_no_hit= "%s\t\t1.0\t\t\t\tphylum_of_interest\t\tno_hit\n" %(query_name)
+            data_formatted_top_meta_no_hit = "%s\t\t1.0\t\t\t\tphylum_of_interest\t\tno_hit\n" % (query_name)
 
 
     if best_nonmetazoan_hits == []:
@@ -239,31 +241,38 @@ def write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_fi
             results_list = parse_blast_line(best_metazoan_hits, tax_column)
             query_name = results_list[0]
             query_name = query_name.split("gene=")[0]
-            data_formatted_top_nonmeta_no_hit= "%s\t\t1.0\t\t\t\tnon_phylum_of_interest\t\tno_hit\n" %(query_name)
+            data_formatted_top_nonmeta_no_hit = "%s\t\t1.0\t\t\t\tnon_phylum_of_interest\t\tno_hit\n" % (query_name)
 
 
     if best_metazoan_hits != []:
         catorgory = "phylum_of_interest"
-        query_name, percentage_identity, Evalue, bit_score, tax_id = parse_blast_line(best_metazoan_hits, tax_column)
+        query_name, percentage_identity, Evalue, bit_score, description, tax_id, \
+                species_sci, species_common, \
+                kingdom = parse_blast_line(best_metazoan_hits, tax_column)
         query_name = query_name.split("gene=")[0]
-        data_formatted_top_meta= "%s\t%s\t%s\t%s\t%s\n" %(query_name, \
-                                                            percentage_identity,Evalue,
-                                                            bit_score, tax_id)
+        data_formatted_top_meta = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (query_name, \
+                                                             percentage_identity, Evalue,
+                                                            bit_score, tax_id,
+                                                            kingdom, catorgory, species_sci, \
+                                                            description)
 
             
     if best_nonmetazoan_hits != []:
         catorgory = "non_phylum_of_interest"
-        query_name, percentage_identity, Evalue, bit_score, tax_id = parse_blast_line(best_nonmetazoan_hits, tax_column)
+        query_name, percentage_identity, Evalue, bit_score, description, tax_id, \
+                species_sci, species_common, kingdom = parse_blast_line(best_nonmetazoan_hits, tax_column)
         query_name = query_name.split("gene=")[0]
-        data_formatted_top_nonmeta= "%s\t%s\t%s\t%s\t%s\n" %(query_name,\
-                                                                    percentage_identity, Evalue,
-                                                                    bit_score, tax_id)
+        data_formatted_top_nonmeta = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (query_name, \
+                                                                     percentage_identity, Evalue,
+                                                                    bit_score, tax_id,
+                                                                    kingdom, catorgory, \
+                                                                    species_sci, description)
 
 
-    out_list = [data_formatted_top_meta_no_hit, data_formatted_top_meta,\
+    out_list = [data_formatted_top_meta_no_hit, data_formatted_top_meta, \
                 data_formatted_top_nonmeta_no_hit, data_formatted_top_nonmeta]
     for i in out_list:
-        #print "i = ", i
+        # print "i = ", i
         out_file.write(i)
 
 
@@ -272,12 +281,12 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
     """this is a function to open up a tab file blast results, and
     produce alien index scores """
     blast_file = open (filename1, "r")
-    out_file = open(outfile,"w")
+    out_file = open(outfile, "w")
     
     file_title_fields = "#query_name\tpercentage_identity\tEvalue\tbit_score\ttax_id\tkingdom\tcategory\tspecies,description\n"
     out_file.write(file_title_fields)
-    tax_column = int(tax_column)-1 #for computer counting, default is 14 (human counting)
-    #this is out list of so called top matches which we will append and remove as applicable
+    tax_column = int(tax_column) - 1  # for computer counting, default is 14 (human counting)
+    # this is out list of so called top matches which we will append and remove as applicable
     best_metazoan_hits = []
     best_nonmetazoan_hits = []
     last_gene_name = ""
@@ -289,59 +298,60 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
         if line.startswith("#"):
             continue
         if not line.strip():
-            continue #if the last line is blank
+            continue  # if the last line is blank
         
         blast_line = line.rstrip("\n").split("\t")
-        query_name, percentage_identity, Evalue, bit_score, tax_id = parse_blast_line(blast_line, tax_column)
+        query_name, percentage_identity, Evalue, bit_score, description, tax_id, \
+                    species_sci, species_common, kingdom = parse_blast_line(blast_line, tax_column)
         query_name = query_name.split("gene=")[0]
-        #print query_name
+        # print query_name
         
         if query_name not in name_already_seen_set:
-            #this is the first time we have seen it. - write out the old results,
-            #if there are any by testing set is greater than size 0
+            # this is the first time we have seen it. - write out the old results,
+            # if there are any by testing set is greater than size 0
             if len(name_already_seen_set) > 0:
-                #not printed this one out yet!
+                # not printed this one out yet!
                 if not last_gene_name in name_print_set:
-                    #add this name to the name print set - keep track of it. 
+                    # add this name to the name print set - keep track of it. 
                     name_print_set.add(last_gene_name)
-                    #call function to write out these results.
-                    #Give it the Best_hit_results. tx_colomn default.
+                    # call function to write out these results.
+                    # Give it the Best_hit_results. tx_colomn default.
                     
                     write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_file)
                     # now these results have been written out. Reset the lists to []
                     best_metazoan_hits = reset_list_add_info(best_metazoan_hits, None)
                     best_nonmetazoan_hits = reset_list_add_info(best_nonmetazoan_hits, None)
 
-                    #print "reset best to :", best_nonmetazoan_hits
-                    #print "do I want to write out old results here?"
+                    # print "reset best to :", best_nonmetazoan_hits
+                    # print "do I want to write out old results here?"
                     
             name_already_seen_set.add(query_name)
-            key = meta_or_non_metazoan(tax_id,tax_id_filter_up_to, filter_out_tax_id)
+            key = meta_or_non_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id)
             
-            #if "g3392" in query_name:
-                #print "best_nonmetazoan_hits line 322 = ", best_nonmetazoan_hits
-                #print "best_metazoan_hits line 323 = ", best_metazoan_hits
+            # if "g3392" in query_name:
+                # print "best_nonmetazoan_hits line 322 = ", best_nonmetazoan_hits
+                # print "best_metazoan_hits line 323 = ", best_metazoan_hits
 
             if key == "phylum_of_interest":
                 best_metazoan_hits = reset_list_add_info(best_metazoan_hits, blast_line)
             if key == "non_phylum_of_interest":
                 best_nonmetazoan_hits = reset_list_add_info(best_nonmetazoan_hits, blast_line)
             last_gene_name = query_name
-            #print "best_metazoan_hits == ", best_metazoan_hits, "\n"
-            #print "best_nonmetazoan_hits == ", best_nonmetazoan_hits, "\n"
+            # print "best_metazoan_hits == ", best_metazoan_hits, "\n"
+            # print "best_nonmetazoan_hits == ", best_nonmetazoan_hits, "\n"
             # break the loop
             continue
 
-        #if the query name is the same as the last one,
-        #we test the bit score to see which is the best hit ...
-        #depending on metazoan/ non assignment
+        # if the query name is the same as the last one,
+        # we test the bit score to see which is the best hit ...
+        # depending on metazoan/ non assignment
         if query_name == last_gene_name:
-            #print "already seen", query_name
-            key = meta_or_non_metazoan(tax_id,tax_id_filter_up_to, filter_out_tax_id)
-            #if "g3392" in query_name:
-                #print "i'm here line 345 "
-                #print "KEY line 346= ", key, blast_line
-            #print "KEY = ", key, blast_line
+            # print "already seen", query_name
+            key = meta_or_non_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id)
+            # if "g3392" in query_name:
+                # print "i'm here line 345 "
+                # print "KEY line 346= ", key, blast_line
+            # print "KEY = ", key, blast_line
             if key == "phylum_of_interest":
                 if best_metazoan_hits == []:
                     best_metazoan_hits = reset_list_add_info(best_metazoan_hits, blast_line)                    
@@ -352,20 +362,20 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
                 if best_nonmetazoan_hits == []:
                     best_nonmetazoan_hits = reset_list_add_info(best_nonmetazoan_hits, blast_line)
                 old_bit_score = float(best_nonmetazoan_hits[0][10])
-                #print "best_nonmetazoan_hits", best_nonmetazoan_hits
-                #print "old bit score = ", old_bit_score, " new = ", float(bit_score)
+                # print "best_nonmetazoan_hits", best_nonmetazoan_hits
+                # print "old bit score = ", old_bit_score, " new = ", float(bit_score)
                 if float(bit_score) > float(best_nonmetazoan_hits[0][10]):
-                    #print " you should see this"
+                    # print " you should see this"
                     
                     best_nonmetazoan_hits = reset_list_add_info(best_nonmetazoan_hits, blast_line)
             last_gene_name = query_name
         
-        #if the names do not match, then we have a new hit. 
+        # if the names do not match, then we have a new hit. 
         if query_name != last_gene_name:
-            #we have already seen it, but not printed it out. 
+            # we have already seen it, but not printed it out. 
             if query_name in name_already_seen_set:
                 # write out the old result. 
-                write_out_data(best_metazoan_hits, best_nonmetazoan_hits,tax_column, out_file)
+                write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_file)
                 
                 best_metazoan_hits = reset_list_add_info(best_metazoan_hits, None)
                 best_nonmetazoan_hits = reset_list_add_info(best_nonmetazoan_hits, None)
@@ -373,46 +383,46 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
                 
         last_gene_name = query_name
         last_blast_line = blast_line
-    #print "name_print_set = ", name_print_set    
+    # print "name_print_set = ", name_print_set    
     if not last_gene_name in name_print_set:
         write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_file)
         name_print_set.add(query_name)
             
     out_file.close()
-    return True #for now until the function is sorted.
+    return True  # for now until the function is sorted.
 
 
 
 ################################################################################################################################################
 
-def parse_blast_tab_file_to_get_Alien_precursor_value(filtered_blast_results_file,\
+def parse_blast_tab_file_to_get_Alien_precursor_value(filtered_blast_results_file, \
                                                       outfile):
     """this is a function to open up a tab file blast results produced by
     parse_blast_tab_file, which works out if the blast hit is metazoan,
     nonmetazoan and excludes those in the phylum of interest, it also
     exclude a synthetic organism.... and  produce alien index scores
     based on the e-value of the hit"""
-    #open files, read and write.
+    # open files, read and write.
     blast_file = open (filtered_blast_results_file, "r")
-    out_file = open(outfile,"w")
+    out_file = open(outfile, "w")
     title_file_fields = "#query_name\tpercentage_identity\tEvalue\tbit_score\ttax_id\tkingdom\tcategory\tprecursor_value\tspecies\tdescription\n"
     out_file.write(title_file_fields)
     for line in blast_file:
         if line.startswith("#"):
             continue
         if not line.strip():
-            continue #if the last line is blank
-        #print line.rstrip("\n").split("\t")
-        query_name, percentage_identity,Evalue,bit_score,tax_id,kingdom,catorgory,\
-                    species_sci,description = line.rstrip("\n").split("\t")
+            continue  # if the last line is blank
+        # print line.rstrip("\n").split("\t")
+        query_name, percentage_identity, Evalue, bit_score, tax_id, kingdom, catorgory, \
+                    species_sci, description = line.rstrip("\n").split("\t")
         query_name = query_name.split("gene=")[0]
         Evalue = float(Evalue)
         precursor_value = precursor_score_calculator(Evalue)
-        #print blast_line
-        data_formatted1="%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" %(query_name, percentage_identity,\
-                                                                 Evalue, bit_score,\
-                                                                 tax_id, kingdom, catorgory,\
-                                                                 precursor_value,\
+        # print blast_line
+        data_formatted1 = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" % (query_name, percentage_identity, \
+                                                                 Evalue, bit_score, \
+                                                                 tax_id, kingdom, catorgory, \
+                                                                 precursor_value, \
                                                                  species_sci, description)
         out_file.write(data_formatted1)
     out_file.close()
@@ -432,18 +442,18 @@ def precursor_score_calculator (Evalue):
 
     Based on AI, genes were classified as foreign (AI>45), indeterminate (0<AI<45), or metazoan (AI<0)
     """
-    #needed imports - do outside of function .
-    #need this for exponential
-    #import math
-    #from math import exp, expm1
+    # needed imports - do outside of function .
+    # need this for exponential
+    # import math
+    # from math import exp, expm1
     
     # AI = log((Best E-value for Metazoa)+e-200)-log((Best E-value for Non-Metazoa)+e-200)
     Evalue = float(Evalue)
     e_minus_200 = float(exp(-200))
-    precursor_score_calculator_value = math.log((Evalue)+e_minus_200, 10)
-    #print Alien_index_precursor_score_calculator_value
-    #Alien_index_precursor_score_calculator_value is basically
-    #log((Best E-value for INPUT kingdom) + e-200)
+    precursor_score_calculator_value = math.log((Evalue) + e_minus_200, 10)
+    # print Alien_index_precursor_score_calculator_value
+    # Alien_index_precursor_score_calculator_value is basically
+    # log((Best E-value for INPUT kingdom) + e-200)
     return precursor_score_calculator_value
 
 
@@ -461,21 +471,21 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
 
     # AI = log((Best E-value for Metazoa)+e-200) - log((Best E-value for Non-Metazoa)+e-200)
     # this is user defined threshold for determining what could be contamination, e.g.
-    #70 pi to its hit or greater = contamination. 
+    # 70 pi to its hit or greater = contamination. 
     percentage_identify_threshold = float(percentage_identify_threshold)
 
-    #alien_index_threshold - threshold for what is a HGT candidate
+    # alien_index_threshold - threshold for what is a HGT candidate
     alien_index_threshold = int(alien_index_threshold)
     blast_file = open (filename_with_precursor_values, "r")
-    LTG_out_new_name = filename_with_precursor_values.split("_")[0]+"_LGT_candifates.out"
+    LTG_out_new_name = filename_with_precursor_values.split("_")[0] + "_LGT_candifates.out"
     LGT_out = open(LTG_out_new_name, "w")
-    out_file = open(outfile,"w")
-    tile_file_fields_all = "#query_name\tpercentage_identity\tevalue\tbit_score\ttax_id\tkingdom\tcategory\talien_index\t"+\
-                       "species\tdescription\tcomments\t\tMeta_query_name\tMeta_percentage_identity\tMeta_evalue\tMeta_bit_score\tMeta_tax_id\t"+\
-                       "Meta_kingdom\tMeta_catorgory\tMeta_alien_index\t"+\
+    out_file = open(outfile, "w")
+    tile_file_fields_all = "#query_name\tpercentage_identity\tevalue\tbit_score\ttax_id\tkingdom\tcategory\talien_index\t" + \
+                       "species\tdescription\tcomments\t\tMeta_query_name\tMeta_percentage_identity\tMeta_evalue\tMeta_bit_score\tMeta_tax_id\t" + \
+                       "Meta_kingdom\tMeta_catorgory\tMeta_alien_index\t" + \
                        "Meta_species\tMeta_description\n"
     
-    tile_file_fields = "#query_name\tpercentage_identity\tevalue\tbit_score\ttax_id\tkingdom\tcatorgory\talien_index\t"+\
+    tile_file_fields = "#query_name\tpercentage_identity\tevalue\tbit_score\ttax_id\tkingdom\tcatorgory\talien_index\t" + \
                        "species\tdescription\tcomments\n"
     
     LGT_out.write(tile_file_fields)
@@ -488,15 +498,15 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
         if line.startswith("#"):
             continue
         if not line.strip():
-            continue #if the last line is blank
+            continue  # if the last line is blank
         blast_line = line.rstrip("\n").split("\t")
         
-        query_name, percentage_identity,Evalue, bit_score,tax_id, kingdom,\
-                    catorgory,precursor_value,species_sci, \
+        query_name, percentage_identity, Evalue, bit_score, tax_id, kingdom, \
+                    catorgory, precursor_value, species_sci, \
                     description = line.rstrip("\n").split("\t")
         query_name = query_name.split("gene=")[0]
-        #precursor value has already been worked out :
-        #log((Best E-value for Metazoa) + e-200) - function precursor_score_calculator
+        # precursor value has already been worked out :
+        # log((Best E-value for Metazoa) + e-200) - function precursor_score_calculator
         precursor_value = float(precursor_value)
 
         if query_name == last_query_name:
@@ -504,38 +514,38 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                 Extra_info = ""
                 alien_index = last_precursor_value - precursor_value
                 # Fungi  = tax_id 4751
-                #plant (higher)Embryophyta  = tax_id 3193
-                #test_if_id_is_metazoan(tax_id_of_interest,final_tx_id_to_identify_up_to,\
-                    #tax_to_filter_out)
+                # plant (higher)Embryophyta  = tax_id 3193
+                # test_if_id_is_metazoan(tax_id_of_interest,final_tx_id_to_identify_up_to,\
+                    # tax_to_filter_out)
                 if tax_id != "":
-                    if test_if_id_is_metazoan(tax_id,{"3193"}, tax_filter_out):
+                    if test_if_id_is_metazoan(tax_id, {"3193"}, tax_filter_out):
                         Extra_info = "Plant_"
-                    if test_if_id_is_metazoan(tax_id,{"4751"}, tax_filter_out):
+                    if test_if_id_is_metazoan(tax_id, {"4751"}, tax_filter_out):
                         Extra_info = "Fungal_"
-                    if test_if_id_is_metazoan(tax_id,{"33634"}, tax_filter_out):
+                    if test_if_id_is_metazoan(tax_id, {"33634"}, tax_filter_out):
                         Extra_info = "Stramenopiles_"
-                    if test_if_id_is_metazoan(tax_id,{"4762"}, tax_filter_out):
+                    if test_if_id_is_metazoan(tax_id, {"4762"}, tax_filter_out):
                         Extra_info = "Oomycetes_"
 
                 meta_query_name, meta_percentage_identity, meta_Evalue, \
-                                meta_bit_score,meta_tax_id, meta_kingdom,\
-                                meta_catorgory,meta_precursor_value,\
+                                meta_bit_score, meta_tax_id, meta_kingdom, \
+                                meta_catorgory, meta_precursor_value, \
                                 meta_species_sci, \
                                 meta_description = last_blast_line.rstrip("\n").split("\t")
 
-                kingdom = Extra_info+kingdom
-                data_formatted = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" %(query_name, \
+                kingdom = Extra_info + kingdom
+                data_formatted = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" % (query_name, \
                                                                         percentage_identity, \
                                                                         Evalue, bit_score, \
-                                                                        tax_id, kingdom,\
-                                                                        catorgory,\
+                                                                        tax_id, kingdom, \
+                                                                        catorgory, \
                                                                         alien_index, \
                                                                         species_sci, description)
-                data_formatted = data_formatted.replace("\n", "")+"\t\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" %(meta_query_name,\
+                data_formatted = data_formatted.replace("\n", "") + "\t\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" % (meta_query_name, \
                                                             meta_percentage_identity, \
                                                             meta_Evalue, meta_bit_score, \
-                                                            meta_tax_id,\
-                                                            meta_kingdom,meta_catorgory, \
+                                                            meta_tax_id, \
+                                                            meta_kingdom, meta_catorgory, \
                                                             alien_index, meta_species_sci, \
                                                             meta_description)    
                 out_file.write(data_formatted)
@@ -544,9 +554,9 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                         comment = "potential_CONTAMINATION"
                     else:
                         comment = "potential_HGT"
-                    data_formatted = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\t%s\n" %(query_name, \
+                    data_formatted = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\t%s\n" % (query_name, \
                                                                         percentage_identity, \
-                                                                        Evalue, bit_score, tax_id, kingdom,\
+                                                                        Evalue, bit_score, tax_id, kingdom, \
                                                                         catorgory, alien_index, species_sci, \
                                                                         description, comment)
                     LGT_out.write(data_formatted)
@@ -560,7 +570,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
             
 
 ######below is the command that call the function, that within itself calls all the other functions
-#to run the script
+# to run the script
 
 if "-v" in sys.argv or "--version" in sys.argv:
     print "v0.0.3"
@@ -682,7 +692,7 @@ parser.add_option("-a", "--alien", dest="alien_index_threshold", default=15,
                   help="this is a threshold for determining the alien_index_threshold "
                   " any value greater than this will be put into the outfile. Default = 15.")
 
-parser.add_option("--tax_filter_out", dest="tax_filter_out", default={"1036719","5106","264599"},
+parser.add_option("--tax_filter_out", dest="tax_filter_out", default={"1036719", "5106", "264599"},
                   help="The tax IDs to filter out: for this analysis the Phylum which your BEAST"
                   "of interest if found. e.g. Aphids are from Arthropoda, therefore this would be "
                   "6656, whihc is the default value. This will filter out all blast hit which are "
@@ -737,7 +747,7 @@ def apply_path(folder, filename):
 ###############################################
 blast_tab_output = options.blast_tab_output
 path = options.path
-#names = apply_path(options.path, options.names)
+# names = apply_path(options.path, options.names)
 tax_filter_out = options.tax_filter_out
 tax_filter_up_to = options.tax_filter_up_to
 tax_column = options.tax_column
@@ -762,66 +772,65 @@ if not os.path.isfile(tax_filename):
     sys.stderr.write("Missing %s\n" % tax_filename)
     sys.exit(1)
     
-#TODO - check merged?
-#TODO - multiple tax_filter_out option
+# TODO - check merged?
 
-#call_function load the tax database info
+# call_function load the tax database info
 tax_dictionary = parse_NCBI_nodes_tab_file(path)
-#call_function - parse the tab file to get the best non and metazoan hit,
-#if defined as such in the tax to use - by default yes
+# call_function - parse the tab file to get the best non and metazoan hit,
+# if defined as such in the tax to use - by default yes
 parse_blast_tab_file(blast_tab_output, outfile, tax_filter_out, \
                      tax_filter_up_to, tax_column)
-#call_function - get precursor values to alien score
+# call_function - get precursor values to alien score
 parse_blast_tab_file_to_get_Alien_precursor_value(outfile, \
-                                        outfile+"_precursor_value.temp")
-#call_function - finally get the alien scores
-final_gene_of_interest = outfile.split("_")[0]+"_Alien_index.out"
-find_true_alien_score(tax_filter_out, outfile+"_precursor_value.temp", \
-                      outfile+"_Alien_index.out", \
+                                        outfile + "_precursor_value.temp")
+# call_function - finally get the alien scores
+final_gene_of_interest = outfile.split("_")[0] + "_Alien_index.out"
+find_true_alien_score(tax_filter_out, outfile + "_precursor_value.temp", \
+                      outfile + "_Alien_index.out", \
                       percentage_identify_threshold, \
                       alien_index_threshold)
 
 print '\n\tdone... go to the pub\n'
-#print tax_filter_out
+# print tax_filter_out
 
-### extra info:
+# ## extra info:
 
 
-### AI = log((Best E-value for Metazoa) + e-200) - log((Best E-value for Non-Metazoa) + e-200)
+# ## AI = log((Best E-value for Metazoa) + e-200) - log((Best E-value for Non-Metazoa) + e-200)
 ### that is how it is found in the paper!!!
-##
-##
-##
-##"""Alien index:  (http://www.sciencemag.org/content/suppl/2008/05/29/320.5880.1210.DC1/Gladyshev.SOM.pdf)
-##    taxonomic origin: Bacteria, Fungi, Plantae, Metazoa, and Other (including protists), and
-##    the best expect value from each group was used to calculate an Alien Index (AI) as given
-##    by the formula AI = log((Best E-value for Metazoa) + e-200) - log((Best E-value for Non-
-##    Metazoa) + e-200). If no hits were found, the E-value was set to 1. Thus, AI is allowed to
-##    vary in the interval between +460 and -460,being positive when top non-metazoan hits
-##    yielded better E-values than the top metazoan ones. 
-##
-##    Based on AI, genes were classified as foreign (AI>45), indeterminate (0<AI<45), or metazoan (AI<0)
-##    """
-##
-##
-###this value is needed for each side of the calculation 
-##e_minus_200 = float(exp(-200))
-##
-##print "e_minus_200 = ", e_minus_200
-##
-##
-##precursor_score_calculator_value = math.log(1.0+e_minus_200)
-###precursor_score_calculator_value
-##print "e_minus_200 = ", e_minus_200, "math.log(1.0) = ", math.log(1.0, 10)
-##print  "math.log(1.0) + e_minus_200 = ", math.log(1.0+e_minus_200, 10)
-##
-##print  "math.log(0.00005) + e_minus_200 = ", math.log(0.00005+e_minus_200, 10)
-##
-##print  "math.log(1e-249) + e_minus_200 = ", math.log(1e-249+e_minus_200, 10)
-##print  "math.log(1e-10000) + e_minus_200 = ", math.log(1e-10000+e_minus_200, 10)
-##
-##                                                                  
-###print precursor_score_calculator_value
-##print "alien index can range from: ", math.log(1e-10000+e_minus_200, 10) - math.log(1.0+e_minus_200, 10), "to: ",  math.log(1.0+e_minus_200, 10)-math.log(1e-10000+e_minus_200, 10)
-##print "\n this is not the -460 to 460 specified in the paper!!!"
-##
+# #
+# #
+# #
+# #"""Alien index:  (http://www.sciencemag.org/content/suppl/2008/05/29/320.5880.1210.DC1/Gladyshev.SOM.pdf)
+# #    taxonomic origin: Bacteria, Fungi, Plantae, Metazoa, and Other (including protists), and
+# #    the best expect value from each group was used to calculate an Alien Index (AI) as given
+# #    by the formula AI = log((Best E-value for Metazoa) + e-200) - log((Best E-value for Non-
+# #    Metazoa) + e-200). If no hits were found, the E-value was set to 1. Thus, AI is allowed to
+# #    vary in the interval between +460 and -460,being positive when top non-metazoan hits
+# #    yielded better E-values than the top metazoan ones. 
+# #
+# #    Based on AI, genes were classified as foreign (AI>45), indeterminate (0<AI<45), or metazoan (AI<0)
+# #    """
+# #
+# #
+# ##this value is needed for each side of the calculation 
+# #e_minus_200 = float(exp(-200))
+# #
+# #print "e_minus_200 = ", e_minus_200
+# #
+# #
+# #precursor_score_calculator_value = math.log(1.0+e_minus_200)
+# ##precursor_score_calculator_value
+# #print "e_minus_200 = ", e_minus_200, "math.log(1.0) = ", math.log(1.0, 10)
+# #print  "math.log(1.0) + e_minus_200 = ", math.log(1.0+e_minus_200, 10)
+# #
+# #print  "math.log(0.00005) + e_minus_200 = ", math.log(0.00005+e_minus_200, 10)
+# #
+# #print  "math.log(1e-249) + e_minus_200 = ", math.log(1e-249+e_minus_200, 10)
+# #print  "math.log(1e-10000) + e_minus_200 = ", math.log(1e-10000+e_minus_200, 10)
+# #
+# #                                                                  
+# ##print precursor_score_calculator_value
+# #print "alien index can range from: ", math.log(1e-10000+e_minus_200, 10) - math.log(1.0+e_minus_200, 10), "to: ",  math.log(1.0+e_minus_200, 10)-math.log(1e-10000+e_minus_200, 10)
+# #print "\n this is not the -460 to 460 specified in the paper!!!"
+# #
