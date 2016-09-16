@@ -245,7 +245,7 @@ def write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_fi
 
 
     if best_metazoan_hits != []:
-        catorgory = "phylum_of_interest"
+        category = "phylum_of_interest"
         query_name, percentage_identity, Evalue, bit_score, description, tax_id, \
                 species_sci, species_common, \
                 kingdom = parse_blast_line(best_metazoan_hits, tax_column)
@@ -253,19 +253,19 @@ def write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_fi
         data_formatted_top_meta = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (query_name, \
                                                              percentage_identity, Evalue,
                                                             bit_score, tax_id,
-                                                            kingdom, catorgory, species_sci, \
+                                                            kingdom, category, species_sci, \
                                                             description)
 
             
     if best_nonmetazoan_hits != []:
-        catorgory = "non_phylum_of_interest"
+        category = "non_phylum_of_interest"
         query_name, percentage_identity, Evalue, bit_score, description, tax_id, \
                 species_sci, species_common, kingdom = parse_blast_line(best_nonmetazoan_hits, tax_column)
         query_name = query_name.split("gene=")[0]
         data_formatted_top_nonmeta = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (query_name, \
                                                                      percentage_identity, Evalue,
                                                                     bit_score, tax_id,
-                                                                    kingdom, catorgory, \
+                                                                    kingdom, category, \
                                                                     species_sci, description)
 
 
@@ -413,7 +413,7 @@ def parse_blast_tab_file_to_get_Alien_precursor_value(filtered_blast_results_fil
         if not line.strip():
             continue  # if the last line is blank
         # print line.rstrip("\n").split("\t")
-        query_name, percentage_identity, Evalue, bit_score, tax_id, kingdom, catorgory, \
+        query_name, percentage_identity, Evalue, bit_score, tax_id, kingdom, category, \
                     species_sci, description = line.rstrip("\n").split("\t")
         query_name = query_name.split("gene=")[0]
         Evalue = float(Evalue)
@@ -421,7 +421,7 @@ def parse_blast_tab_file_to_get_Alien_precursor_value(filtered_blast_results_fil
         # print blast_line
         data_formatted1 = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" % (query_name, percentage_identity, \
                                                                  Evalue, bit_score, \
-                                                                 tax_id, kingdom, catorgory, \
+                                                                 tax_id, kingdom, category, \
                                                                  precursor_value, \
                                                                  species_sci, description)
         out_file.write(data_formatted1)
@@ -482,10 +482,10 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
     out_file = open(outfile, "w")
     tile_file_fields_all = "#query_name\tpercentage_identity\tevalue\tbit_score\ttax_id\tkingdom\tcategory\talien_index\t" + \
                        "species\tdescription\tcomments\t\tMeta_query_name\tMeta_percentage_identity\tMeta_evalue\tMeta_bit_score\tMeta_tax_id\t" + \
-                       "Meta_kingdom\tMeta_catorgory\tMeta_alien_index\t" + \
+                       "Meta_kingdom\tMeta_category\tMeta_alien_index\t" + \
                        "Meta_species\tMeta_description\n"
     
-    tile_file_fields = "#query_name\tpercentage_identity\tevalue\tbit_score\ttax_id\tkingdom\tcatorgory\talien_index\t" + \
+    tile_file_fields = "#query_name\tpercentage_identity\tevalue\tbit_score\ttax_id\tkingdom\tcategory\talien_index\t" + \
                        "species\tdescription\tcomments\n"
     
     LGT_out.write(tile_file_fields)
@@ -502,7 +502,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
         blast_line = line.rstrip("\n").split("\t")
         
         query_name, percentage_identity, Evalue, bit_score, tax_id, kingdom, \
-                    catorgory, precursor_value, species_sci, \
+                    category, precursor_value, species_sci, \
                     description = line.rstrip("\n").split("\t")
         query_name = query_name.split("gene=")[0]
         # precursor value has already been worked out :
@@ -510,7 +510,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
         precursor_value = float(precursor_value)
 
         if query_name == last_query_name:
-            if catorgory == "non_phylum_of_interest":
+            if category == "non_phylum_of_interest":
                 Extra_info = ""
                 alien_index = last_precursor_value - precursor_value
                 # Fungi  = tax_id 4751
@@ -529,7 +529,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
 
                 meta_query_name, meta_percentage_identity, meta_Evalue, \
                                 meta_bit_score, meta_tax_id, meta_kingdom, \
-                                meta_catorgory, meta_precursor_value, \
+                                meta_category, meta_precursor_value, \
                                 meta_species_sci, \
                                 meta_description = last_blast_line.rstrip("\n").split("\t")
 
@@ -538,14 +538,14 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                                                                         percentage_identity, \
                                                                         Evalue, bit_score, \
                                                                         tax_id, kingdom, \
-                                                                        catorgory, \
+                                                                        category, \
                                                                         alien_index, \
                                                                         species_sci, description)
                 data_formatted = data_formatted.replace("\n", "") + "\t\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" % (meta_query_name, \
                                                             meta_percentage_identity, \
                                                             meta_Evalue, meta_bit_score, \
                                                             meta_tax_id, \
-                                                            meta_kingdom, meta_catorgory, \
+                                                            meta_kingdom, meta_category, \
                                                             alien_index, meta_species_sci, \
                                                             meta_description)    
                 out_file.write(data_formatted)
@@ -557,7 +557,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                     data_formatted = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\t%s\n" % (query_name, \
                                                                         percentage_identity, \
                                                                         Evalue, bit_score, tax_id, kingdom, \
-                                                                        catorgory, alien_index, species_sci, \
+                                                                        category, alien_index, species_sci, \
                                                                         description, comment)
                     LGT_out.write(data_formatted)
         else:
@@ -586,7 +586,7 @@ $ python Lateral_gene_transfer_predictor.py -i blast_w_tax_id.tab --tax_filter_o
 
 taxid - 6231 (nematoda)
 
-Tax databse from NCBI is require. Download, unzip, and use -p /PATH/TO/   scripts will find them from here. 
+Tax database from NCBI is required. Download, unzip, and use -p /PATH/TO/   scripts will find them from here. 
 
     wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
     tar -zxvf taxdump.tar.gz
