@@ -773,6 +773,7 @@ if not os.path.isfile(tax_filename):
     sys.exit(1)
     
 # TODO - check merged?
+# TODO - output full blast file + AI score
 
 # call_function load the tax database info
 tax_dictionary = parse_NCBI_nodes_tab_file(path)
