@@ -517,7 +517,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                 # plant (higher)Embryophyta  = tax_id 3193
                 # test_if_id_is_metazoan(tax_id_of_interest,final_tx_id_to_identify_up_to,\
                     # tax_to_filter_out)
-                if tax_id != "":
+                """";if tax_id != "":
                     if test_if_id_is_metazoan(tax_id, {"3193"}, tax_filter_out):
                         Extra_info = "Plant_"
                     if test_if_id_is_metazoan(tax_id, {"4751"}, tax_filter_out):
@@ -525,7 +525,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                     if test_if_id_is_metazoan(tax_id, {"33634"}, tax_filter_out):
                         Extra_info = "Stramenopiles_"
                     if test_if_id_is_metazoan(tax_id, {"4762"}, tax_filter_out):
-                        Extra_info = "Oomycetes_"
+                        Extra_info = "Oomycetes_"""""
 
                 meta_query_name, meta_percentage_identity, meta_Evalue, \
                                 meta_bit_score, meta_tax_id, meta_kingdom, \
@@ -533,7 +533,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                                 meta_species_sci, \
                                 meta_description = last_blast_line.rstrip("\n").split("\t")
 
-                kingdom = Extra_info + kingdom
+                # kingdom = Extra_info + kingdom
                 data_formatted = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\n" % (query_name, \
                                                                         percentage_identity, \
                                                                         Evalue, bit_score, \
