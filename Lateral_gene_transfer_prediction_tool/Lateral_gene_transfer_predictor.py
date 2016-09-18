@@ -517,7 +517,7 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                 # plant (higher)Embryophyta  = tax_id 3193
                 # test_if_id_is_metazoan(tax_id_of_interest,final_tx_id_to_identify_up_to,\
                     # tax_to_filter_out)
-                """";if tax_id != "":
+                """"if tax_id != "":
                     if test_if_id_is_metazoan(tax_id, {"3193"}, tax_filter_out):
                         Extra_info = "Plant_"
                     if test_if_id_is_metazoan(tax_id, {"4751"}, tax_filter_out):
