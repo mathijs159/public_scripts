@@ -187,9 +187,15 @@ def parse_blast_line(blast_line_as_list, tax_column):
     species_common = ""
     kingdom = ""
     try:
-        tax_id = blast_line[tax_column].split("_")[1]
-        return query_name, percentage_identity, Evalue, bit_score, \
-            description, tax_id, species_sci, species_common, kingdom
+        tax_id = blast_line[tax_column].split("_")[-1]
+        try:
+            tax_dictionary[tax_id]
+            return query_name, percentage_identity, Evalue, bit_score, \
+                description, tax_id, species_sci, species_common, kingdom
+        except KeyError:
+            tax_id = "N/A"
+            return query_name, percentage_identity, Evalue, bit_score, \
+                description, tax_id, species_sci, species_common, kingdom
     except IndexError:
         # print "tax_id not present, filtering out\n"
         tax_id = "N/A"
