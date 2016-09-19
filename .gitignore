@@ -25,3 +25,5 @@
 
 #Ignore all Jython class files (present if using Jython)
 *.class
+/.project
+/.pydevproject
