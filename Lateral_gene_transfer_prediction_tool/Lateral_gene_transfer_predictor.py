@@ -188,7 +188,7 @@ def parse_blast_line(blast_line_as_list, tax_column):
     kingdom = ""
     try:
         tax_id = blast_line[tax_column].split("_")[-1]
-        #kingdom = blast_line[tax_column].split("_")[0]
+        description = blast_line[tax_column].split("_")[0]
         try:
             tax_dictionary[tax_id]
             return query_name, percentage_identity, Evalue, bit_score, \
