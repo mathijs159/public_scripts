@@ -191,7 +191,7 @@ def parse_blast_line(blast_line_as_list, tax_column):
         #assigns tested Verticillium genome to Verticillium
         if tax_id.startswith("chr"):
             tax_id = "5106"
-            description = blast_lineblast_line[tax_column]
+            description = blast_line[tax_column]
             return query_name, percentage_identity, Evalue, bit_score, \
                 description, tax_id, species_sci, species_common, kingdom
         
