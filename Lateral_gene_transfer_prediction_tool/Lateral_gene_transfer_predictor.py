@@ -188,7 +188,14 @@ def parse_blast_line(blast_line_as_list, tax_column):
     kingdom = ""
     try:
         tax_id = blast_line[tax_column].split("_")[-1]
-        description = blast_line[tax_column].split("_")[0]
+        #assigns tested Verticillium genome to Verticillium
+        if tax_id.startswith("chr"):
+            tax_id = "5106"
+            description = blast_lineblast_line[tax_column]
+            return query_name, percentage_identity, Evalue, bit_score, \
+                description, tax_id, species_sci, species_common, kingdom
+        
+        description = blast_line[tax_column].split("_")[0]    
         try:
             tax_dictionary[tax_id]
             return query_name, percentage_identity, Evalue, bit_score, \
