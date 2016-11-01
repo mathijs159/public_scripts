@@ -189,7 +189,7 @@ def parse_blast_line(blast_line_as_list, tax_column):
     try:
         tax_id = blast_line[tax_column].split("_")[-1]
         #assigns tested Verticillium genome to Verticillium
-        if tax_id.startswith("chr"):
+        if tax_id.endswith(".1"):
             tax_id = "5106"
             description = blast_line[tax_column]
             return query_name, percentage_identity, Evalue, bit_score, \
