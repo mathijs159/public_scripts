@@ -702,11 +702,11 @@ parser.add_option("--pi", dest="pi", default=70,
                   help="this is a threshold for determining likely contaminants. e.g. if "
                   "it is greater than pi percentage identity than it may be contamination. "
                   " or a very recent HGT. Default = 70.")
-parser.add_option("-a", "--alien", dest="alien_index_threshold", default=15,
+parser.add_option("-a", "--alien", dest="alien_index_threshold", default=1,
                   help="this is a threshold for determining the alien_index_threshold "
                   " any value greater than this will be put into the outfile. Default = 15.")
 
-parser.add_option("--tax_filter_out", dest="tax_filter_out", default={"1036719", "5106", "264599"},
+parser.add_option("--tax_filter_out", dest="tax_filter_out", default={"222543"},
                   help="The tax IDs to filter out: for this analysis the Phylum which your BEAST"
                   "of interest if found. e.g. Aphids are from Arthropoda, therefore this would be "
                   "6656, whihc is the default value. This will filter out all blast hit which are "
@@ -792,6 +792,7 @@ if not os.path.isfile(tax_filename):
 tax_dictionary = parse_NCBI_nodes_tab_file(path)
 # call_function - parse the tab file to get the best non and metazoan hit,
 # if defined as such in the tax to use - by default yes
+
 parse_blast_tab_file(blast_tab_output, outfile, tax_filter_out, \
                      tax_filter_up_to, tax_column)
 # call_function - get precursor values to alien score
