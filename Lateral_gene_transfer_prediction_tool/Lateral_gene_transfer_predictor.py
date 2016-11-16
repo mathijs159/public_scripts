@@ -569,10 +569,10 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                                                             meta_description)    
                 out_file.write(data_formatted)
                 if alien_index > alien_index_threshold:
-                    if float(percentage_identity) > percentage_identify_threshold:
-                        comment = "potential_CONTAMINATION"
-                    else:
-                        comment = "potential_HGT"
+                    #if float(percentage_identity) > percentage_identify_threshold:
+                    #    comment = "potential_CONTAMINATION"
+                    #else:
+                    comment = "potential_HGT"
                     data_formatted = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\t%s\n" % (query_name, \
                                                                         percentage_identity, \
                                                                         Evalue, bit_score, tax_id, kingdom, \
@@ -770,13 +770,13 @@ def apply_path(folder, filename):
 blast_tab_output = options.blast_tab_output
 path = options.path
 # names = apply_path(options.path, options.names)
-tax_filter_out = set(list(options.tax_filter_out).split(","))
-tax_filter_up_to = set(list(options.tax_filter_up_to).split(","))
+tax_filter_out = set(list(options.tax_filter_out.split(",")))
+tax_filter_up_to = set(list(options.tax_filter_up_to.split(",")))
 tax_column = options.tax_column
 outfile = options.outfile
 percentage_identify_threshold = options.pi
 alien_index_threshold = options.alien_index_threshold
-maxTax = set(list(options.maxTax).split(","))
+maxTax = set(list(options.maxTax.split(",")))
 
 print(tax_filter_out, tax_filter_up_to, maxTax)
 
