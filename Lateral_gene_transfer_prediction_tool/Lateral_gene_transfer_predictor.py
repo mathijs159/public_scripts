@@ -770,13 +770,13 @@ def apply_path(folder, filename):
 blast_tab_output = options.blast_tab_output
 path = options.path
 # names = apply_path(options.path, options.names)
-tax_filter_out = set(list(options.tax_filter_out.split(",")))
-tax_filter_up_to = set(list(options.tax_filter_up_to.split(",")))
+tax_filter_out = list(options.tax_filter_out.split(","))
+tax_filter_up_to = list(options.tax_filter_up_to.split(","))
 tax_column = options.tax_column
 outfile = options.outfile
 percentage_identify_threshold = options.pi
 alien_index_threshold = options.alien_index_threshold
-maxTax = set(list(options.maxTax.split(",")))
+maxTax = list(options.maxTax.split(","))
 
 print(tax_filter_out, tax_filter_up_to, maxTax)
 
