@@ -717,7 +717,7 @@ parser.add_option("--tax_filter_out", dest="tax_filter_out", default="222543",
                   "6656, whihc is the default value. This will filter out all blast hit which are "
                   "from this phylum. It is possible to put a species/kingdom tax_id in here ... what"
                   "ever floats your boat."
-                  "It is also possible to add multiple IDs in the format \"ID no\",\"next ID no\"\""
+                  "It is also possible to add multiple IDs seperated by comma (no space)"
                   "(current default is 1036719,5106,264599 for all three Verticillium ids)")
 
 
