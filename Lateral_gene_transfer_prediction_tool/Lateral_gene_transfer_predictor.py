@@ -739,7 +739,7 @@ parser.add_option("-o", "--out", dest="outfile", default="_tab_blast_LGT_results
                   metavar="FILE")
 
 parser.add_option("--maxTax", dest="maxTax", default="131567",
-                  help="Tax id to go up to and consider outgroup - default= 131567 for cellular organisms."
+                  help="Tax id to go up to and consider outgroup - default is 131567 for cellular organisms."
                   "Everything outside of this will be ignored")
 
 (options, args) = parser.parse_args()
