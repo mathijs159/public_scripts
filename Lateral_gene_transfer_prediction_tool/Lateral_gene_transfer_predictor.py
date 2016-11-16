@@ -93,7 +93,7 @@ dictionary for later use"""
 
 ###########################################################################################################################################################################################
 
-def test_if_id_is_metazoan(tax_id_of_interest, final_tx_id_to_identify_up_to, tax_to_filter_out):
+def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_up_to, tax_to_filter_out):
     """function to get a list of tax id of interest from the tax_dictionary
     which is produced in the parse_function (parse_NCBI_nodes_tab_file)
     nodes.dmp file. . The tax id
@@ -127,16 +127,18 @@ def test_if_id_is_metazoan(tax_id_of_interest, final_tx_id_to_identify_up_to, ta
         # 32630 is a synthetic organism
         if parent == "32630":  # 32630
             return "In_filter_out_tax_id"
-            break            
-        if parent in tax_to_filter_out:
+        elif parent in tax_to_filter_out:
             # print "filtering out"
-            return "In_filter_out_tax_id"
-            break
-        if parent in final_tx_id_to_identify_up_to:
+            return "Recipient"
+        elif parent in final_tx_id_to_identify_up_to:
             # print "......................... i'm here"
-            return True
+            return "INgroup"
+        elif parent == maxTax:
+            #check if tax_id is mapped to your clade of interest
+            return "OUTgroup"
         elif parent == "1":
             # print "Reached the root of the tree"
+            #NCBI taxonomy root contains everything (unmapped entries, viroids etc.), should not be considered OUTgroup
             return False
   
 ###########################################################################################################################################################################################
@@ -210,19 +212,22 @@ def parse_blast_line(blast_line_as_list, tax_column):
         return query_name, percentage_identity, Evalue, bit_score, \
             description, tax_id, species_sci, species_common, kingdom
 
-def meta_or_non_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id):
+def meta_or_non_metazoan(tax_id, maxTax, tax_id_filter_up_to, filter_out_tax_id):
     "function to return metazoan or non-metazoan"
     # call the function to test if the id of interest falls in metazoa or not
     if tax_id == "N/A":
         return "N/A"
-    elif test_if_id_is_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id) == "In_filter_out_tax_id":
+    elif test_if_id_is_metazoan(tax_id, maxTax, tax_id_filter_up_to, filter_out_tax_id) == "Recipient":
         # print "in filter out phylum\n"
         return "N/A"  # skip the code below
-    elif test_if_id_is_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id):
+    elif test_if_id_is_metazoan(tax_id, maxTax, tax_id_filter_up_to, filter_out_tax_id) == "INgroup":
         return "phylum_of_interest"
-    else:
+    elif test_if_id_is_metazoan(tax_id, maxTax, tax_id_filter_up_to, filter_out_tax_id) == "OUTgroup":
         return "non_phylum_of_interest"
         # assert test_if_id_is_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id) is False
+    else:
+        return "N/A"
+        #skip this entry
     
 def reset_list_add_info(list_in, info)  :
     "function to rest the list to empty, then add info to it"
@@ -291,7 +296,7 @@ def write_out_data(best_metazoan_hits, best_nonmetazoan_hits, tax_column, out_fi
 
 
 
-def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up_to, tax_column):
+def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up_to, maxTax, tax_column):
     """this is a function to open up a tab file blast results, and
     produce alien index scores """
     blast_file = open (filename1, "r")
@@ -340,7 +345,7 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
                     # print "do I want to write out old results here?"
                     
             name_already_seen_set.add(query_name)
-            key = meta_or_non_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id)
+            key = meta_or_non_metazoan(tax_id, maxTax, tax_id_filter_up_to, filter_out_tax_id)
             
             # if "g3392" in query_name:
                 # print "best_nonmetazoan_hits line 322 = ", best_nonmetazoan_hits
@@ -361,7 +366,7 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
         # depending on metazoan/ non assignment
         if query_name == last_gene_name:
             # print "already seen", query_name
-            key = meta_or_non_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id)
+            key = meta_or_non_metazoan(tax_id, maxTax, tax_id_filter_up_to, filter_out_tax_id)
             # if "g3392" in query_name:
                 # print "i'm here line 345 "
                 # print "KEY line 346= ", key, blast_line
@@ -706,22 +711,22 @@ parser.add_option("-a", "--alien", dest="alien_index_threshold", default=1,
                   help="this is a threshold for determining the alien_index_threshold "
                   " any value greater than this will be put into the outfile. Default = 15.")
 
-parser.add_option("--tax_filter_out", dest="tax_filter_out", default={"222543"},
+parser.add_option("--tax_filter_out", dest="tax_filter_out", default="222543",
                   help="The tax IDs to filter out: for this analysis the Phylum which your BEAST"
                   "of interest if found. e.g. Aphids are from Arthropoda, therefore this would be "
                   "6656, whihc is the default value. This will filter out all blast hit which are "
                   "from this phylum. It is possible to put a species/kingdom tax_id in here ... what"
                   "ever floats your boat."
                   "It is also possible to add multiple IDs in the format \"ID no\",\"next ID no\"\""
-                  "(current default is a set containing all three Verticillium NCBI tax IDs, (1036719, 5106 & 264599))")
+                  "(current default is 1036719,5106,264599 for all three Verticillium ids)")
 
 
-parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default={"4751"},
+parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default="4751",
                   help=" The tax IDs to 'walk up to', to determine assignment. By default this is metazoa."
                   "The script work out the best metazoan to non-metazoan hit. But this can be altered if "
                   "you wish to alter this." 
                   "It is also possible to add multiple IDs in the format \"ID no\",\"next ID no\"\"etc."
-                  "(current default is a set containing Fungi, 4751)")
+                  "(current default is 4751 for fungi)")
 
 
 parser.add_option("--tax_column", dest="tax_column", default="2",
@@ -733,6 +738,9 @@ parser.add_option("-o", "--out", dest="outfile", default="_tab_blast_LGT_results
                   help="Output filename - default= infile__tab_blast_LGT_results",
                   metavar="FILE")
 
+parser.add_option("-m", "--maxTax", dest="maxTax", default="131567",
+                  help="Tax id to go up to and consider outgroup - default= 131567 for cellular organisms."
+                  "Everything outside of this will be ignored")
 
 (options, args) = parser.parse_args()
 
@@ -762,12 +770,15 @@ def apply_path(folder, filename):
 blast_tab_output = options.blast_tab_output
 path = options.path
 # names = apply_path(options.path, options.names)
-tax_filter_out = options.tax_filter_out
-tax_filter_up_to = options.tax_filter_up_to
+tax_filter_out = set(list(options.tax_filter_out).split(","))
+tax_filter_up_to = set(list(options.tax_filter_up_to).split(","))
 tax_column = options.tax_column
 outfile = options.outfile
 percentage_identify_threshold = options.pi
 alien_index_threshold = options.alien_index_threshold
+maxTax = set(list(options.maxTax).split(","))
+
+print(tax_filter_out, tax_filter_up_to, maxTax)
 
 taxonomy_filename = os.path.join(path, "nodes.dmp")
 if not os.path.isfile(taxonomy_filename):
@@ -794,7 +805,7 @@ tax_dictionary = parse_NCBI_nodes_tab_file(path)
 # if defined as such in the tax to use - by default yes
 
 parse_blast_tab_file(blast_tab_output, outfile, tax_filter_out, \
-                     tax_filter_up_to, tax_column)
+                     tax_filter_up_to, maxTax, tax_column)
 # call_function - get precursor values to alien score
 parse_blast_tab_file_to_get_Alien_precursor_value(outfile, \
                                         outfile + "_precursor_value.temp")
