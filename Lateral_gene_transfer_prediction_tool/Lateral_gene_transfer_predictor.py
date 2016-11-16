@@ -133,7 +133,7 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
         elif parent in final_tx_id_to_identify_up_to:
             # print "......................... i'm here"
             return "INgroup"
-        elif parent == maxTax:
+        elif parent in maxTax:
             #check if tax_id is mapped to your clade of interest
             return "OUTgroup"
         elif parent == "1":
