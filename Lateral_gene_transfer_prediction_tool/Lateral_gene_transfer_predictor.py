@@ -138,7 +138,7 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
             return "OUTgroup"
         elif parent == "1":
             # print "Reached the root of the tree"
-            #NCBI taxonomy root contains everything (unmapped entries, viroids etc.), should not be considered OUTgroup
+            #NCBI taxonomy root contains everything (unmapped entries, viroids etc.), should be considered unknown
             return False
   
 ###########################################################################################################################################################################################
