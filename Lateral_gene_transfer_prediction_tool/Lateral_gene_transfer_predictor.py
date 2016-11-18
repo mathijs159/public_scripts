@@ -106,6 +106,8 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
     if tax_id_of_interest == "0":
         tax_id_of_interest == "32644"  # assign an unknown id
         return "In_filter_out_tax_id" 
+    #expand the initial search to accomodate single organism exclusions
+    
     # call the function to parse nodes file and assign to variable
     # tax_dictionary = parse_NCBI_nodes_tab_file(nodes_dmp)
     # empty list to add tax id to
