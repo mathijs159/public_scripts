@@ -128,7 +128,6 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
         if parent == "32630":  # 32630
             return "In_filter_out_tax_id"
         elif parent in tax_to_filter_out:
-            # print "filtering out"
             return "Recipient"
         elif parent in final_tx_id_to_identify_up_to:
             # print "......................... i'm here"
@@ -190,9 +189,9 @@ def parse_blast_line(blast_line_as_list, tax_column):
     kingdom = ""
     try:
         tax_id = blast_line[tax_column].split("_")[-1]
-        #assigns tested Verticillium genome to Verticillium
+        #assigns tested Verticillium genome to Verticillium (dahliae JR2)
         if tax_id.endswith(".1"):
-            tax_id = "5106"
+            tax_id = "1202531"
             description = blast_line[tax_column]
             return query_name, percentage_identity, Evalue, bit_score, \
                 description, tax_id, species_sci, species_common, kingdom
@@ -711,7 +710,7 @@ parser.add_option("-a", "--alien", dest="alien_index_threshold", default=1,
                   help="this is a threshold for determining the alien_index_threshold "
                   " any value greater than this will be put into the outfile. Default = 15.")
 
-parser.add_option("--tax_filter_out", dest="tax_filter_out", default="222543",
+parser.add_option("--tax_filter_out", dest="tax_filter_out", default="1036719,5106,264599",
                   help="The tax IDs to filter out: for this analysis the Phylum which your BEAST"
                   "of interest if found. e.g. Aphids are from Arthropoda, therefore this would be "
                   "6656, whihc is the default value. This will filter out all blast hit which are "
@@ -721,7 +720,7 @@ parser.add_option("--tax_filter_out", dest="tax_filter_out", default="222543",
                   "(current default is 1036719,5106,264599 for all three Verticillium ids)")
 
 
-parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default="4751",
+parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default="147550",
                   help=" The tax IDs to 'walk up to', to determine assignment. By default this is metazoa."
                   "The script work out the best metazoan to non-metazoan hit. But this can be altered if "
                   "you wish to alter this." 
@@ -738,7 +737,7 @@ parser.add_option("-o", "--out", dest="outfile", default="_tab_blast_LGT_results
                   help="Output filename - default= infile__tab_blast_LGT_results",
                   metavar="FILE")
 
-parser.add_option("--maxTax", dest="maxTax", default="131567",
+parser.add_option("--maxTax", dest="maxTax", default="4751",
                   help="Tax id to go up to and consider outgroup - default is 131567 for cellular organisms."
                   "Everything outside of this will be ignored")
 
