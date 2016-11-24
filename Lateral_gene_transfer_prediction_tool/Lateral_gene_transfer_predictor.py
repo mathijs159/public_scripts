@@ -712,7 +712,7 @@ parser.add_option("-a", "--alien", dest="alien_index_threshold", default=1,
                   help="this is a threshold for determining the alien_index_threshold "
                   " any value greater than this will be put into the outfile. Default = 15.")
 
-parser.add_option("--tax_filter_out", dest="tax_filter_out", default="1036719,5106,264599",
+parser.add_option("--tax_filter_out", dest="tax_filter_out", default="222543",
                   help="The tax IDs to filter out: for this analysis the Phylum which your BEAST"
                   "of interest if found. e.g. Aphids are from Arthropoda, therefore this would be "
                   "6656, whihc is the default value. This will filter out all blast hit which are "
@@ -720,14 +720,18 @@ parser.add_option("--tax_filter_out", dest="tax_filter_out", default="1036719,51
                   "ever floats your boat."
                   "It is also possible to add multiple IDs seperated by comma (no space)"
                   "(current default is 1036719,5106,264599 for all three Verticillium ids)")
+                #hypocreomycetidae id: 222543
+                #Verti: 1036719,5106,264599
+                
 
-
-parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default="147550",
+parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default=None,
                   help=" The tax IDs to 'walk up to', to determine assignment. By default this is metazoa."
                   "The script work out the best metazoan to non-metazoan hit. But this can be altered if "
                   "you wish to alter this." 
                   "It is also possible to add multiple IDs in the format \"ID no\",\"next ID no\"\"etc."
                   "(current default is 4751 for fungi)")
+                #fungi: 4751
+                #sordariomycetes: 147550
 
 
 parser.add_option("--tax_column", dest="tax_column", default="2",
@@ -739,7 +743,7 @@ parser.add_option("-o", "--out", dest="outfile", default="_tab_blast_LGT_results
                   help="Output filename - default= infile__tab_blast_LGT_results",
                   metavar="FILE")
 
-parser.add_option("--maxTax", dest="maxTax", default="4751",
+parser.add_option("--maxTax", dest="maxTax", default="131567",
                   help="Tax id to go up to and consider outgroup - default is 131567 for cellular organisms."
                   "Everything outside of this will be ignored")
 
