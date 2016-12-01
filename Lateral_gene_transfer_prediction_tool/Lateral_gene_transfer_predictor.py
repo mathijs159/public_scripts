@@ -723,6 +723,7 @@ parser.add_option("--tax_filter_out", dest="tax_filter_out", default="222543",
                   "(current default is 1036719,5106,264599 for all three Verticillium ids)")
                 #hypocreomycetidae id: 222543
                 #Verti: 1036719,5106,264599
+                #Dikarya: 451864
                 
 
 parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default=None,
