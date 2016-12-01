@@ -192,7 +192,7 @@ def parse_blast_line(blast_line_as_list, tax_column):
     try:
         tax_id = blast_line[tax_column].split("_")[-1]
         #assigns tested Verticillium genome to Verticillium (dahliae JR2)
-        if tax_id.endswith(".1") or tax_id.endswith(".2"):
+        if tax_id.endswith(".1") or tax_id.endswith(".2") == False:
             tax_id = "1202531"
             description = blast_line[tax_column]
             return query_name, percentage_identity, Evalue, bit_score, \
