@@ -326,7 +326,8 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
                     species_sci, species_common, kingdom = parse_blast_line(blast_line, tax_column)
         query_name = query_name.split("gene=")[0]
         # print query_name
-        
+        if Evalue >= evalue_cutoff:
+            continue
         if query_name not in name_already_seen_set:
             # this is the first time we have seen it. - write out the old results,
             # if there are any by testing set is greater than size 0
@@ -749,6 +750,9 @@ parser.add_option("--maxTax", dest="maxTax", default="131567",
                   help="Tax id to go up to and consider outgroup - default is 131567 for cellular organisms."
                   "Everything outside of this will be assigned False as group and subsequently ignored")
 
+parser.add_option("--evalueMax", dest="evalue_cutoff", default=1e-03,
+                  help="Blast hits above this threshold will be ignored")
+
 (options, args) = parser.parse_args()
 
 
@@ -784,7 +788,7 @@ outfile = options.outfile
 percentage_identify_threshold = options.pi
 alien_index_threshold = options.alien_index_threshold
 maxTax = list(options.maxTax.split(","))
-
+evalue_cutoff = options.evalue_cutoff
 print(tax_filter_out, tax_filter_up_to, maxTax)
 
 taxonomy_filename = os.path.join(path, "nodes.dmp")
