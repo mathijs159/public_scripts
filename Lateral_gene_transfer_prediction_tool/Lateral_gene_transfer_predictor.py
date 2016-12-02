@@ -326,7 +326,7 @@ def parse_blast_tab_file(filename1, outfile, filter_out_tax_id, tax_id_filter_up
                     species_sci, species_common, kingdom = parse_blast_line(blast_line, tax_column)
         query_name = query_name.split("gene=")[0]
         # print query_name
-        if Evalue >= evalue_cutoff:
+        if Evalue > evalue_cutoff:
             continue
         if query_name not in name_already_seen_set:
             # this is the first time we have seen it. - write out the old results,
