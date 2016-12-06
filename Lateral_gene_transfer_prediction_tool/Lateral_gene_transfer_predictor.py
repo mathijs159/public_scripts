@@ -735,6 +735,7 @@ parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default=None,
                   "(current default is 4751 for fungi)")
                 #fungi: 4751
                 #sordariomycetes: 147550
+                #Oomycetes: 4762
 
 
 parser.add_option("--tax_column", dest="tax_column", default="2",
