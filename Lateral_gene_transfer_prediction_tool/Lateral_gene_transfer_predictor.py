@@ -107,7 +107,7 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
     if tax_id_of_interest == "0":
         tax_id_of_interest == "32644"  # assign an unknown id
         return "In_filter_out_tax_id" 
-    #expand the initial search to accomodate single organism exclusions
+    # expand the initial search to accomodate single organism exclusions
     
     # call the function to parse nodes file and assign to variable
     # tax_dictionary = parse_NCBI_nodes_tab_file(nodes_dmp)
@@ -136,11 +136,11 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
             # print "......................... i'm here"
             return "INgroup"
         elif parent in maxTax:
-            #check if tax_id is mapped to your clade of interest
+            # check if tax_id is mapped to your clade of interest
             return "OUTgroup"
         elif parent == "1":
             # print "Reached the root of the tree"
-            #NCBI taxonomy root contains everything (unmapped entries, viroids etc.), should be considered unknown
+            # NCBI taxonomy root contains everything (unmapped entries, viroids etc.), should be considered unknown
             return False
   
 ###########################################################################################################################################################################################
@@ -192,7 +192,7 @@ def parse_blast_line(blast_line_as_list, tax_column):
     kingdom = ""
     try:
         tax_id = blast_line[tax_column].split("_")[-1]
-        #assigns tested Verticillium genome to Verticillium (dahliae JR2)
+        # assigns tested Verticillium genome to Verticillium (dahliae JR2)
         if re.search(vertiRegex, blast_line[tax_column]):
             tax_id = "1202531"
             description = blast_line[tax_column]
@@ -229,7 +229,7 @@ def meta_or_non_metazoan(tax_id, maxTax, tax_id_filter_up_to, filter_out_tax_id)
         # assert test_if_id_is_metazoan(tax_id, tax_id_filter_up_to, filter_out_tax_id) is False
     else:
         return "N/A"
-        #skip this entry
+        # skip this entry
     
 def reset_list_add_info(list_in, info)  :
     "function to rest the list to empty, then add info to it"
@@ -572,9 +572,9 @@ def find_true_alien_score(tax_filter_out, filename_with_precursor_values, outfil
                                                             meta_description)    
                 out_file.write(data_formatted)
                 if alien_index > alien_index_threshold:
-                    #if float(percentage_identity) > percentage_identify_threshold:
+                    # if float(percentage_identity) > percentage_identify_threshold:
                     #    comment = "potential_CONTAMINATION"
-                    #else:
+                    # else:
                     comment = "potential_HGT"
                     data_formatted = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%f\t%s\t%s\t%s\n" % (query_name, \
                                                                         percentage_identity, \
@@ -722,9 +722,9 @@ parser.add_option("--tax_filter_out", dest="tax_filter_out", default="222543",
                   "ever floats your boat."
                   "It is also possible to add multiple IDs seperated by comma (no space)"
                   "(current default is 1036719,5106,264599 for all three Verticillium ids)")
-                #hypocreomycetidae id: 222543
-                #Verti: 1036719,5106,264599
-                #Dikarya: 451864
+                # hypocreomycetidae id: 222543
+                # Verti: 1036719,5106,264599
+                # Dikarya: 451864
                 
 
 parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default=None,
@@ -733,9 +733,9 @@ parser.add_option("--tax_filter_up_to", dest="tax_filter_up_to", default=None,
                   "you wish to alter this." 
                   "It is also possible to add multiple IDs in the format \"ID no\",\"next ID no\"\"etc."
                   "(current default is 4751 for fungi)")
-                #fungi: 4751
-                #sordariomycetes: 147550
-                #Oomycetes: 4762
+                # fungi: 4751
+                # sordariomycetes: 147550
+                # Oomycetes: 4762
 
 
 parser.add_option("--tax_column", dest="tax_column", default="2",
