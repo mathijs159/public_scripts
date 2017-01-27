@@ -874,3 +874,4 @@ print '\n\tdone... go to the pub\n'
 # #print "alien index can range from: ", math.log(1e-10000+e_minus_200, 10) - math.log(1.0+e_minus_200, 10), "to: ",  math.log(1.0+e_minus_200, 10)-math.log(1e-10000+e_minus_200, 10)
 # #print "\n this is not the -460 to 460 specified in the paper!!!"
 # #
+#TODO: also include entries with only recipient hits
