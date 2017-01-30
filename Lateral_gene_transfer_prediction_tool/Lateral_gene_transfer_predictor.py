@@ -107,6 +107,11 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
     if tax_id_of_interest == "0":
         tax_id_of_interest == "32644"  # assign an unknown id
         return "In_filter_out_tax_id" 
+    if tax_id_of_interest in tax_to_filter_out:
+        return "Recipient"
+    if tax_id_of_interest in final_tx_id_to_identify_up_to:
+        # print "......................... i'm here"
+        return "INgroup"
     # expand the initial search to accomodate single organism exclusions
     
     # call the function to parse nodes file and assign to variable
@@ -116,7 +121,11 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
     # get the "master" parent id
     parent = tax_dictionary[tax_id_of_interest]
     # print parent
-
+    if parent in tax_to_filter_out:
+        return "Recipient"
+    if parent in final_tx_id_to_identify_up_to:
+        # print "......................... i'm here"
+        return "INgroup"
     # list_of_tx_id_identified_that_we_want.append(parent)
     while True:
     # for keys in tax_dictionary:
