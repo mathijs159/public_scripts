@@ -112,6 +112,13 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
     if tax_id_of_interest in final_tx_id_to_identify_up_to:
         # print "......................... i'm here"
         return "INgroup"
+    if tax_id_of_interest in maxTax:
+        # check if tax_id is mapped to your clade of interest
+        return "OUTgroup"
+    if tax_id_of_interest == "1":
+        # print "Reached the root of the tree"
+        # NCBI taxonomy root contains everything (unmapped entries, viroids etc.), should be considered unknown
+        return False
     # expand the initial search to accomodate single organism exclusions
     
     # call the function to parse nodes file and assign to variable
@@ -126,6 +133,13 @@ def test_if_id_is_metazoan(tax_id_of_interest, maxTax, final_tx_id_to_identify_u
     if parent in final_tx_id_to_identify_up_to:
         # print "......................... i'm here"
         return "INgroup"
+    if parent in maxTax:
+        # check if tax_id is mapped to your clade of interest
+        return "OUTgroup"
+    if parent == "1":
+        # print "Reached the root of the tree"
+        # NCBI taxonomy root contains everything (unmapped entries, viroids etc.), should be considered unknown
+        return False
     # list_of_tx_id_identified_that_we_want.append(parent)
     while True:
     # for keys in tax_dictionary:
