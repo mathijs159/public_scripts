@@ -732,7 +732,7 @@ parser.add_option("-p", "--path", dest="path", default=os.getcwd(),
 parser.add_option("--pi", dest="pi", default=70,
                   help="this is a threshold for determining likely contaminants. e.g. if "
                   "it is greater than pi percentage identity than it may be contamination. "
-                  " or a very recent HGT. Default = 70.")
+                  " or a very recent HGT. Default = 70.") #not used
 parser.add_option("-a", "--alien", dest="alien_index_threshold", default=1,
                   help="this is a threshold for determining the alien_index_threshold "
                   " any value greater than this will be put into the outfile. Default = 15.")
